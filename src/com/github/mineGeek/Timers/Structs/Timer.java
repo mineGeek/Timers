@@ -136,6 +136,13 @@ public class Timer {
 		
 	}
 	
+	public void close() {
+		
+		stop();
+		for ( ITimer x : timerItems ) { x.close(); }
+		
+	}
+	
 	
 	
 }

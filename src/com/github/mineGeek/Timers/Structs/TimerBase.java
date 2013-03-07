@@ -53,6 +53,6 @@ abstract class TimerBase implements ITimer, Runnable {
 	public void reset( Long timeSinceStart, Long timeElapsed, Long timeToEnd ) {}
 	public void paused( Long timeSinceStart, Long timeElapsed, Long timeToEnd ) {}
 	public void resume( Long timeSinceStart, Long timeElapsed, Long timeToEnd ) {}
-	
+	public void close() {}
 	
 }

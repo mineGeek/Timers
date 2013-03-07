@@ -24,5 +24,7 @@ public interface ITimer {
 	public void paused( Object args[] );
 	public void resume( Object args[] );
 	
+	public void close();
+	
 	
 }
