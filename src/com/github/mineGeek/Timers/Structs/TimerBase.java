@@ -47,12 +47,16 @@ abstract class TimerBase implements ITimer, Runnable {
 
 
 	
-	public void ding( Long timeSinceStart, Long timeElapsed, Long timeToEnd ) {}
-	public void start( Long timeToEnd ) {}
-	public void end( Long timeElapsed ) {}
-	public void reset( Long timeSinceStart, Long timeElapsed, Long timeToEnd ) {}
-	public void paused( Long timeSinceStart, Long timeElapsed, Long timeToEnd ) {}
-	public void resume( Long timeSinceStart, Long timeElapsed, Long timeToEnd ) {}
+	public void ding( Object[] args ) {}
+	public void preStart( Object[] args ) {}
+	public void start( Object[] args ) {}
+	public void postStart( Object[] args ) {}
+	public void preEnd( Object[] args ) {}
+	public void end( Object[] args) {}
+	public void postEnd( Object[] args ) {}
+	public void reset( Object[] args ) {}
+	public void paused( Object[] args ) {}
+	public void resume( Object[] args ) {}
 	public void close() {}
 	
 }
