@@ -21,7 +21,7 @@ abstract class TimerBase implements ITimer, Runnable {
 	public Integer getEnd() { return end; }
 	
 	public void setTimerStart(Long start) { timerStarted = start; }	
-	public void setTimerEnd(Long end) { timerEnds = end; }	
+	public void setTimerComplete(Long end) { timerEnds = end; }	
 	public Long getLastStartTime() { return timerStarted; }
 	
 	public void setTaskId( Integer taskId ) { this.taskId = taskId; }
@@ -51,9 +51,9 @@ abstract class TimerBase implements ITimer, Runnable {
 	public void preStart( Object[] args ) {}
 	public void start( Object[] args ) {}
 	public void postStart( Object[] args ) {}
-	public void preEnd( Object[] args ) {}
-	public void end( Object[] args) {}
-	public void postEnd( Object[] args ) {}
+	public void preStop( Object[] args ) {}
+	public void stop( Object[] args) {}
+	public void postStop( Object[] args ) {}
 	public void reset( Object[] args ) {}
 	public void paused( Object[] args ) {}
 	public void resume( Object[] args ) {}
