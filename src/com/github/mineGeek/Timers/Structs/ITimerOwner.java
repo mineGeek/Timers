@@ -1,6 +1,6 @@
 package com.github.mineGeek.Timers.Structs;
 
-public interface ITimerParent {
+public interface ITimerOwner {
 	public Integer getLength();
 	public Integer getOffset();
 }

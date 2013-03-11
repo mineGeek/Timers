@@ -1,18 +1,70 @@
 package com.github.mineGeek.Timers.Main;
 
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.mineGeek.Timers.Structs.SubTimer;
+import com.github.mineGeek.Persistence.FileStore;
+import com.github.mineGeek.Timers.Structs.Timers;
+
 
 public class TimersRegistry {
 
 	public static JavaPlugin plugin;
-	public static Map<String, SubTimer> timers = new WeakHashMap<String, SubTimer>();
 	
+	public 	static Set<Timers> timers = new HashSet<Timers>();
+	private static FileStore fs = null;
+	public 	static boolean persistTimerData = false;
+	private static boolean timerDataFetched = false;
 	
+	public static Integer getTimersOffset( String tag ) {
+		
+		Integer result = null;
+		
+		if ( persistTimerData ) {
+			
+			if ( !timerDataFetched ) {
+				
+				fs = new FileStore( plugin.getDataFolder().toString() + File.separator + "timers", "data.bin" );
+				fs.load();
+			}
+			
+			result = fs.getAsInteger( tag, null );
+			
+		}
+		return result;
+	}
+	
+	public static void saveTimersOffset() {
+		
+		if ( persistTimerData ) {
+				
+			fs = new FileStore( plugin.getDataFolder().toString() + File.separator + "timers", "data.bin" );
+			Integer offset = null;
+
+			for ( Timers t : timers ) {
+				
+				offset = (int) (t.lastStop - t.lastStart)/1000;				
+				if ( offset < 1 ) offset = null;
+				fs.set( t.tag, offset );
+			}
+			
+			fs.save();
+			
+		}		
+		
+	}
+	
+	public static void addTimers( Timers timersObject ) {
+		
+		timersObject.offset = getTimersOffset( timersObject.tag );
+		timers.add( timersObject );
+		
+		
+	}
 	
 	public static String getTimeStampAsString( Integer timeStamp ) {
 		
@@ -35,6 +87,12 @@ public class TimersRegistry {
 		
 	}	
 	
-	
+	public static void close() {
+		Bukkit.getScheduler().cancelTasks( plugin );
+		if ( timers != null && !timers.isEmpty() ) for ( Timers t : timers ) t.stop();
+		saveTimersOffset();
+		if ( timers != null && !timers.isEmpty() ) for ( Timers t : timers ) t.close();
+		plugin = null;
+	}
 	
 }

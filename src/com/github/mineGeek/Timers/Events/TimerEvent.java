@@ -1,10 +1,13 @@
-package com.github.mineGeek.Timers.Structs;
+package com.github.mineGeek.Timers.Events;
+
+import org.bukkit.Bukkit;
 
 import com.github.mineGeek.Timers.Main.TimersRegistry;
+import com.github.mineGeek.Timers.Structs.Timer;
 
 public class TimerEvent implements Runnable {
 
-	public SubTimer timer;	
+	public Timer timer;	
 	public TimerEvent handlerStart = null;
 	public TimerEvent handlerComplete = null;
 	
@@ -12,6 +15,8 @@ public class TimerEvent implements Runnable {
 	public Integer secondInterval = null;
 	public Integer secondComplete = null;
 	public Integer secondTotal = null;
+	
+	private Integer offset = null;
 	
 	private int realStart = (int)(System.currentTimeMillis() / 1000);
 	
@@ -28,7 +33,14 @@ public class TimerEvent implements Runnable {
 		return args;
 	}
 	
-	
+	public void reset( int now ) {
+		realStart = now;
+		offset = timer != null ? timer.getOffset() : null;
+		Bukkit.getLogger().info(" OFFSET SAYS: " + offset );
+	}
+	public void reset() {
+		reset((int)(System.currentTimeMillis() / 1000 ));
+	}
 	
 	public void setVars( Integer start, Integer interval, Integer complete, Integer total, TimerEvent startHandler, TimerEvent completeHandler ) {
 		
@@ -43,22 +55,25 @@ public class TimerEvent implements Runnable {
 		secondInterval = interval;
 		secondComplete = complete;
 		secondTotal = total;
-		realStart = (int)(System.currentTimeMillis()/1000);
+		reset((int)(System.currentTimeMillis()/1000));
 	}
 	
 	
 	private String getTimeRemaining( int now ) {
-		if ( secondTotal != null) return TimersRegistry.getTimeStampAsString(  secondTotal - now );
+		int offset = this.offset == null ? 0 : this.offset;
+		if ( secondTotal != null) return TimersRegistry.getTimeStampAsString(  ( secondTotal-offset) - now );
 		return "";
 	}
 	
 	private String getTimeElapsed( int now ) {
-		return TimersRegistry.getTimeStampAsString( now );
+		int offset = this.offset == null ? 0 : this.offset;
+		return TimersRegistry.getTimeStampAsString( now - offset );
 	}	
 	
 	private String getTimeToComplete( int now ) {
 		if ( secondComplete != null ) {
-			return TimersRegistry.getTimeStampAsString( secondComplete - now );
+			int offset = this.offset == null ? 0 : this.offset;
+			return TimersRegistry.getTimeStampAsString( (secondComplete-offset) - now );
 		} 
 		return "";
 	}
@@ -68,6 +83,7 @@ public class TimerEvent implements Runnable {
 		if ( handlerComplete != null ) handlerComplete.close();
 		handlerStart = null;
 		handlerComplete = null;
+		timer = null;
 	}
 	
 	@Override
