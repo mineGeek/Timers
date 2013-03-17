@@ -36,7 +36,7 @@ public class Timer implements ITimerOwner {
 		
 		eventHandler.reset();
 		
-		Bukkit.broadcastMessage( "Starting : start" + nextStart + " " + " int: " + nextInterval + " stop: " + nextStop);
+		//Bukkit.broadcastMessage( "Starting : start" + nextStart + " " + " int: " + nextInterval + " stop: " + nextStop);
 		if ( eventHandler.interval != null && nextStart != null && nextInterval != null ) {
 
 			eventHandler.interval.handlerStart = eventHandler.start;
@@ -71,8 +71,7 @@ public class Timer implements ITimerOwner {
 	
 	public void ini() {
 		
-		stop();
-		
+		stop();		
 		nextStart 		= getSecondsStart();
 		nextInterval 	= getSecondsInterval();
 		nextStop		= getSecondsStop();
@@ -109,7 +108,11 @@ public class Timer implements ITimerOwner {
 		Integer offset = getOffset();
 		if ( offset == null ) offset = 0;
 		
-		if ( secondStop != null ) return secondStop - offset ;
+		if ( secondStop != null ) {
+			return secondStop - offset ;
+		} else {
+			if ( parent!= null ) return parent.getLength() - offset;
+		}
 		return null;
 	}
 	

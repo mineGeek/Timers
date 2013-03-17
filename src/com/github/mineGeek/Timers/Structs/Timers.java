@@ -1,7 +1,5 @@
 package com.github.mineGeek.Timers.Structs;
 
-import org.bukkit.Bukkit;
-
 import com.github.mineGeek.Timers.Main.TimersRegistry;
 
 public class Timers implements ITimerOwner {
@@ -9,6 +7,7 @@ public class Timers implements ITimerOwner {
 	public 	String tag = null;
 	public 	Integer length;
 	public	Integer	offset;
+	public	Integer lastOffset = null;
 	public  Long lastStart;
 	public	Long lastStop;
 	public	Timer clock = new Timer( this );
@@ -23,7 +22,11 @@ public class Timers implements ITimerOwner {
 		return length == null ? 0 : length;
 	}
 	
-	public void ini() 	{ clock.secondStop = length; clock.ini(); }
+	public void ini() 	{
+		if ( offset != null && lastOffset == null ) lastOffset = offset;
+		clock.secondStop = length;
+		clock.ini(); 
+	}
 	
 	public void addSubTimer( Timer timer ) {
 		clock.addSubTimer( timer );
@@ -31,15 +34,16 @@ public class Timers implements ITimerOwner {
 	
 	public void stop() 	{
 		lastStop = System.currentTimeMillis();		
-		clock.stop(); 
+		clock.stop();
+		if ( lastOffset != null ) resetOffset();
 	}
 	
 	public void start() { 
-		Bukkit.getLogger().info(" --> Offset= " + offset + " <--");
+		
+				
 		lastStart = System.currentTimeMillis();
-		clock.start();
-		this.offset = null;
-		Bukkit.getLogger().info(" ++> Offset= " + offset + " <++");
+		clock.start();		
+		offset = null;
 	}
 	
 	
@@ -64,6 +68,17 @@ public class Timers implements ITimerOwner {
 	@Override
 	public Integer getOffset() {
 		return this.offset == null ? 0 : this.offset;
+	}
+	
+	public void resetOffset() {
+		
+		if ( lastOffset != null ) {
+		
+			this.offset = null;
+			clock.ini();
+			this.lastOffset = null;
+		}
+		
 	}
 	
 }

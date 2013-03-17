@@ -1,7 +1,5 @@
 package com.github.mineGeek.Timers.Events;
 
-import org.bukkit.Bukkit;
-
 import com.github.mineGeek.Timers.Main.TimersRegistry;
 import com.github.mineGeek.Timers.Structs.Timer;
 
@@ -36,7 +34,6 @@ public class TimerEvent implements Runnable {
 	public void reset( int now ) {
 		realStart = now;
 		offset = timer != null ? timer.getOffset() : null;
-		Bukkit.getLogger().info(" OFFSET SAYS: " + offset );
 	}
 	public void reset() {
 		reset((int)(System.currentTimeMillis() / 1000 ));
@@ -67,13 +64,12 @@ public class TimerEvent implements Runnable {
 	
 	private String getTimeElapsed( int now ) {
 		int offset = this.offset == null ? 0 : this.offset;
-		return TimersRegistry.getTimeStampAsString( now - offset );
+		return TimersRegistry.getTimeStampAsString( now + offset );
 	}	
 	
 	private String getTimeToComplete( int now ) {
 		if ( secondComplete != null ) {
-			int offset = this.offset == null ? 0 : this.offset;
-			return TimersRegistry.getTimeStampAsString( (secondComplete-offset) - now );
+			return TimersRegistry.getTimeStampAsString( secondComplete - now ); 
 		} 
 		return "";
 	}
